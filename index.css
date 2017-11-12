@@ -1,0 +1,172 @@
+html {
+    background-color: whitesmoke;
+}
+
+body {
+    margin: 0;
+    background-color: white;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    color: #222222;
+
+    /* https://philipwalton.github.io/solved-by-flexbox/demos/sticky-footer */
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.clearfix {
+    clear: both;
+}
+
+.highlighted {
+    background-color: #FDFF9E;
+}
+
+a {
+    color: #375eab;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #23527c;
+    text-decoration: underline;
+}
+
+hr {
+    border: 0;
+    border-bottom: 1px solid #d1e1f0;
+}
+
+code {
+    background-color: inherit;
+    border: none;
+    color: #222;
+    padding: 0;
+}
+
+pre {
+    display: block;
+    margin: 0 0 10px;
+    padding: 10px;
+    overflow: auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f5f5f5;
+    color: #222;
+    font-size: 13px;
+    white-space: pre;
+    word-break: normal;
+    word-wrap: normal;
+}
+
+header.page, footer.page {
+    padding: 18px 0;
+    background-color: #e0ebf5;
+}
+
+header.page {
+    height: 18px;
+    border-bottom: 2px solid #d1e1f0;
+}
+
+header.page h1 {
+    display: inline-block;
+    margin: -3px 0 0;
+    /*padding-top: 12px;*/
+    font-size: 22px;
+    font-weight: 700;
+}
+
+header.page h1 a {
+    text-decoration: none;
+    color: #375eab;
+}
+
+header.page h1 a:hover {
+    color: #5e5e5e;
+}
+
+header.page h1 em {
+    font-size: 14px;
+    font-weight: normal;
+    font-style: italic;
+}
+
+/*header.page nav {*/
+/*margin-top: 16px;*/
+/*}*/
+
+header.page nav a {
+    text-decoration: none;
+    color: #375eab;
+}
+
+header.page nav a:hover {
+    color: #222222;
+}
+
+footer.page {
+    border-top: 2px solid #d1e1f0;
+}
+
+main.page {
+    flex: 1;
+    padding-bottom: 64px;
+}
+
+.page-package header {
+    padding: 24px 0;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #d1e1f0;
+}
+
+.page-package header h1.name {
+    float: left;
+    margin: 0;
+    font-size: 48px;
+    font-weight: 200;
+}
+
+.page-package header h3.version {
+    float: left;
+    margin: 28px 0 0 16px;
+    font-size: 18px;
+    font-weight: 200;
+    font-style: italic;
+    color: #5e5e5e;
+
+}
+
+.page-package .content {
+    padding-right: 32px;
+}
+
+.page-package .content table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.page-package .content table th {
+    padding: 5px;
+    border-top: 0;
+    border-bottom: 2px solid #ddd;
+}
+
+.page-package .content table td {
+    padding: 5px;
+    border-top: 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.page-package .sidebar {
+    padding-left: 32px;
+    border-left: 1px solid #d1e1f0;
+}
+
+.page-package .sidebar table td {
+    padding-right: 8px;
+    padding-bottom: 2px;
+}
