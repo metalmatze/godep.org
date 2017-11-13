@@ -39,26 +39,33 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <header>
-                            <h1 class="name">dep</h1>
-                            <h3 class="version">v0.3.2</h3>
+                            <h1 class="name">{{ .Name }}</h1>
+                            <h3 class="version">{{ .CurrentVersion.Name }}</h3>
                             <div class="clearfix"></div>
                         </header>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-12 col-md-8 col-lg-9 content">
-                        <p>Package dep is a prototype dependency management library.</p>
+                        <p>{{ .Description }}</p>
                         <hr>
 
-                        <pre>import "github.com/golang/dep"</pre>
-                        <pre>go get -v -u github.com/golang/dep</pre>
+                        <pre>import "github.com/{{ .Owner}}/{{ .Name }}"</pre>
+                        <pre>go get -v -u github.com/{{ .Owner}}/{{ .Name }}</pre>
 
+                    {{ if .CurrentVersion.Name }}
                         <h4>dep</h4>
-                        <pre>dep ensure -add github.com/golang/dep</pre>
+                        <pre>dep ensure -add github.com/{{ .Owner}}/{{ .Name }}</pre>
                         <pre>[[constraint]]
-name = "github.com/golang/dep"
-version = "0.3.2"</pre>
+name = "github.com/{{ .Owner}}/{{ .Name }}"
+version = "{{ .CurrentVersion.Name }}"</pre>
+                    {{ else }}
+                        <hr>
+                        <p>This project hasn't tag any versions yet.</p>
+                        <hr>
+                    {{ end }}
 
+                        <!--
                         <h3>Directories</h3>
 
                         <table>
@@ -143,48 +150,60 @@ version = "0.3.2"</pre>
                             </tr>
                             </tbody>
                         </table>
-
-
+                        -->
                     </div>
+
                     <div class="col-xs-12 col-md-4 col-lg-3 sidebar">
+                    {{ if .License }}
                         <h4>License</h4>
-                        <p>Apache-2</p>
+                        <p>
+                            <a href="{{ .License.URL }}">{{ .License.Name }}</a>
+                        </p>
+                    {{ end }}
 
+                    {{ if .Topics }}
                         <h4>Tags</h4>
-                        <p>#golang #dependency-manager #package-manager #toolchain</p>
+                    {{ range .Topics }}
+                        <a href="{{ .URL }}">#{{ .Name }}</a>
+                    {{ end }}
+                    {{ end }}
 
+                    {{ if .Versions }}
                         <h4>Versions</h4>
                         <ul style="padding-left: 16px">
-                            <li><a href="#v0.3.2">v0.3.2</a> on Oct 18</li>
-                            <li><a href="#v0.3.1">v0.3.1</a> on Sep 19</li>
-                            <li><a href="#v0.3.0">v0.3.0</a> on Aug 4</li>
-                            <li><a href="#v0.2.1">v0.2.1</a> on Aug 1</li>
-                            <li><a href="#v0.2.0">v0.2.0</a> on Jul 25</li>
-                            <li><a href="#v0.1.0">v0.1.0</a> on May 27</li>
+                        {{ range .Versions }}
+                            <li>
+                                <a href="{{ .URL }}">{{ .Name }}</a>
+                            {{ .Published | dateFormat }}
+                            {{ if .Prerelease }}(pre){{ end }}
+                            {{ if .Draft }}(draft){{ end }}
+                            </li>
+                        {{ end }}
                         </ul>
+                    {{ end }}
 
                         <h4>Stats</h4>
                         <table>
                             <tbody>
                             <tr>
-                                <td><a href="https://github.com/golang/dep/stargazers">Stars</a></td>
-                                <td>5673</td>
+                                <td><a href="https://github.com/{{ .Owner }}/{{ .Name }}/stargazers">Stars</a></td>
+                                <td>{{ .Stats.Stars }}</td>
                             </tr>
                             <tr>
-                                <td><a href="https://github.com/golang/dep/watchers">Watchers</a></td>
-                                <td>227</td>
+                                <td><a href="https://github.com/{{ .Owner }}/{{ .Name }}/watchers">Watchers</a></td>
+                                <td>{{ .Stats.Watchers }}</td>
                             </tr>
                             <tr>
-                                <td><a href="https://github.com/golang/dep/network">Forks</a></td>
-                                <td>371</td>
+                                <td><a href="https://github.com/{{ .Owner }}/{{ .Name }}/network">Forks</a></td>
+                                <td>{{ .Stats.Forks }}</td>
                             </tr>
                             <tr>
-                                <td><a href="https://github.com/golang/dep/issues">Issues</a></td>
-                                <td>753</td>
+                                <td><a href="https://github.com/{{ .Owner }}/{{ .Name }}/issues">Issues</a></td>
+                                <td>{{ .Stats.Issues }}</td>
                             </tr>
                             <tr>
-                                <td><a href="https://github.com/golang/dep/pulls">PullRequests</a></td>
-                                <td>615</td>
+                                <td><a href="https://github.com/{{ .Owner }}/{{ .Name }}/pulls">PullRequests</a></td>
+                                <td>{{ .Stats.PullRequests }}</td>
                             </tr>
                             </tbody>
                         </table>
