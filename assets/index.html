@@ -53,17 +53,16 @@
                         <pre>import "github.com/{{ .Owner}}/{{ .Name }}"</pre>
                         <pre>go get -v -u github.com/{{ .Owner}}/{{ .Name }}</pre>
 
+                    <h4>dep</h4>
                     {{ if .CurrentVersion.Name }}
-                        <h4>dep</h4>
                         <pre>dep ensure -add github.com/{{ .Owner}}/{{ .Name }}</pre>
                         <pre>[[constraint]]
 name = "github.com/{{ .Owner}}/{{ .Name }}"
 version = "{{ .CurrentVersion.Name }}"</pre>
                     {{ else }}
-                        <hr>
                         <p>This project hasn't tag any versions yet.</p>
-                        <hr>
                     {{ end }}
+                    <hr>
 
                         <!--
                         <h3>Directories</h3>
