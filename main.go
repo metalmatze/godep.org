@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"html/template"
 	"log"
@@ -13,6 +14,8 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/gobuffalo/packr"
+	_ "github.com/lib/pq"
+	"github.com/metalmatze/godep.org/repository"
 	"github.com/shurcooL/githubql"
 	"golang.org/x/oauth2"
 )
@@ -35,6 +38,28 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	db, err := sql.Open("postgres", "postgres://postgres:postgres@localhost:5432?sslmode=disable")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	repositoryStorage, err := repository.NewStorage(db)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	repositoryService, err := repository.NewService(repositoryStorage)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	repo, err := repositoryService.Get(context.TODO(), "github.com/prometheus/prometheus")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%+v\n", repo)
 
 	ghClient := githubql.NewClient(oauth2.NewClient(
 		context.TODO(),
@@ -148,6 +173,9 @@ func packageHandler(client *githubql.Client, page *template.Template) http.Handl
 
 		if err := client.Query(r.Context(), &q, vars); err != nil {
 			log.Println(err)
+			w.Write([]byte(http.StatusText(http.StatusNotFound)))
+			w.WriteHeader(http.StatusNotFound)
+			return
 		}
 
 		d := data{
