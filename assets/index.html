@@ -60,7 +60,7 @@
 name = "github.com/{{ .Owner}}/{{ .Name }}"
 version = "{{ .CurrentVersion.Name }}"</pre>
                     {{ else }}
-                        <p>This project hasn't tag any versions yet.</p>
+                        <p>This project hasn't tagged any versions yet.</p>
                     {{ end }}
                     <hr>
 
@@ -150,10 +150,13 @@ version = "{{ .CurrentVersion.Name }}"</pre>
                             </tbody>
                         </table>
                         -->
+
+                        <p>Updated {{ .Updated | dateFormat "on Jan 02, 2006 03:04:05" }}</p>
+
                     </div>
 
                     <div class="col-xs-12 col-md-4 col-lg-3 sidebar">
-                    {{ if .License }}
+                    {{ if .License.Name }}
                         <h4>License</h4>
                         <p>
                             <a href="{{ .License.URL }}">{{ .License.Name }}</a>
@@ -173,7 +176,7 @@ version = "{{ .CurrentVersion.Name }}"</pre>
                         {{ range .Versions }}
                             <li>
                                 <a href="{{ .URL }}">{{ .Name }}</a>
-                            {{ .Published | dateFormat }}
+                            {{ .Published | dateFormat "on Jan 02, 2006" }}
                             {{ if .Prerelease }}(pre){{ end }}
                             {{ if .Draft }}(draft){{ end }}
                             </li>

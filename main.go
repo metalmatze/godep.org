@@ -24,11 +24,11 @@ func main() {
 	box := packr.NewBox("./assets")
 
 	templateFuncs := template.FuncMap{
-		"dateFormat": func(t time.Time) string {
+		"dateFormat": func(format string, t time.Time) string {
 			if t.IsZero() {
 				return ""
 			}
-			return t.Format("on Jan 02, 2006")
+			return t.Format(format)
 		},
 	}
 
