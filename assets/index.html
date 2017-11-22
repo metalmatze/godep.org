@@ -39,7 +39,7 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <header>
-                            <h1 class="name">{{ .Name }}</h1>
+                            <h1 class="name">{{ .URL | repositoryName }}</h1>
                             <h3 class="version">{{ .CurrentVersion.Name }}</h3>
                             <div class="clearfix"></div>
                         </header>
@@ -50,14 +50,14 @@
                         <p>{{ .Description }}</p>
                         <hr>
 
-                        <pre>import "github.com/{{ .Owner}}/{{ .Name }}"</pre>
-                        <pre>go get -v -u github.com/{{ .Owner}}/{{ .Name }}</pre>
+                        <pre>import "{{ .URL }}"</pre>
+                        <pre>go get -v -u {{ .URL }}</pre>
 
                     <h4>dep</h4>
                     {{ if .CurrentVersion.Name }}
-                        <pre>dep ensure -add github.com/{{ .Owner}}/{{ .Name }}</pre>
+                        <pre>dep ensure -add {{ .URL }}</pre>
                         <pre>[[constraint]]
-name = "github.com/{{ .Owner}}/{{ .Name }}"
+name = "{{ .URL }}"
 version = "{{ .CurrentVersion.Name }}"</pre>
                     {{ else }}
                         <p>This project hasn't tagged any versions yet.</p>
@@ -187,26 +187,12 @@ version = "{{ .CurrentVersion.Name }}"</pre>
                         <h4>Stats</h4>
                         <table>
                             <tbody>
+                            {{ range .Stats }}
                             <tr>
-                                <td><a href="https://github.com/{{ .Owner }}/{{ .Name }}/stargazers">Stars</a></td>
-                                <td>{{ .Stats.Stars }}</td>
+                                <td><a href="{{ .URL }}">{{ .Name }}</a></td>
+                                <td>{{ .Value }}</td>
                             </tr>
-                            <tr>
-                                <td><a href="https://github.com/{{ .Owner }}/{{ .Name }}/watchers">Watchers</a></td>
-                                <td>{{ .Stats.Watchers }}</td>
-                            </tr>
-                            <tr>
-                                <td><a href="https://github.com/{{ .Owner }}/{{ .Name }}/network">Forks</a></td>
-                                <td>{{ .Stats.Forks }}</td>
-                            </tr>
-                            <tr>
-                                <td><a href="https://github.com/{{ .Owner }}/{{ .Name }}/issues">Issues</a></td>
-                                <td>{{ .Stats.Issues }}</td>
-                            </tr>
-                            <tr>
-                                <td><a href="https://github.com/{{ .Owner }}/{{ .Name }}/pulls">PullRequests</a></td>
-                                <td>{{ .Stats.PullRequests }}</td>
-                            </tr>
+                            {{ end }}
                             </tbody>
                         </table>
 

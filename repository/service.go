@@ -1,6 +1,10 @@
 package repository
 
-import "context"
+import (
+	"context"
+
+	"github.com/pkg/errors"
+)
 
 type (
 	// Service is an interface which should implement the
@@ -12,20 +16,49 @@ type (
 	// store and retrieve repositories.
 	Storage interface {
 		Get(ctx context.Context, url string) (Repository, error)
+		Exists(ctx context.Context, url string) (bool, error)
+		Create(ctx context.Context, repo Repository) error
 	}
 )
 
+var NotFoundErr = errors.New("repository not found")
+
 type service struct {
+	github       *GitHub
 	repositories Storage
 }
 
 // NewService creates a new Service implementation which works with a Storage.
-func NewService(repositories Storage) (Service, error) {
+func NewService(repositories Storage, gh *GitHub) Service {
 	return &service{
+		github:       gh,
 		repositories: repositories,
-	}, nil
+	}
 }
 
 func (s *service) Get(ctx context.Context, url string) (Repository, error) {
-	return s.repositories.Get(ctx, url)
+	exists, err := s.repositories.Exists(ctx, url)
+	if err != nil {
+		return Repository{}, err
+	}
+
+	if !exists {
+		// TODO: godoc
+
+		repo, err := s.github.Get(ctx, url)
+		if err != nil {
+			return repo, err
+		}
+
+		if err := s.repositories.Create(ctx, repo); err != nil {
+			return repo, err
+		}
+	}
+
+	repo, err := s.repositories.Get(ctx, url)
+	if err != nil && err != NotFoundErr {
+		return repo, err
+	}
+
+	return repo, err
 }
