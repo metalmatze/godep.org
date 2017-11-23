@@ -8,9 +8,8 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"time"
-
 	"strings"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/gobuffalo/packr"
@@ -47,6 +46,11 @@ func main() {
 	}
 	defer db.Close()
 
+	gd, err := repository.NewGoDoc()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	gh, err := repository.NewGitHubClient(os.Getenv("GITHUB_TOKEN"))
 	if err != nil {
 		log.Fatal(err)
@@ -59,7 +63,7 @@ func main() {
 
 	var repositoryService repository.Service
 	{
-		repositoryService = repository.NewService(repositories, gh)
+		repositoryService = repository.NewService(repositories, gh, gd)
 	}
 
 	r := chi.NewRouter()
@@ -91,6 +95,10 @@ func packageHandler(repositories repository.Service, page *template.Template) ht
 		}
 
 		repo, err := repositories.Get(r.Context(), uri.String())
+		if err == repository.NotFoundErr {
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

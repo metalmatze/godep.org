@@ -25,13 +25,15 @@ var NotFoundErr = errors.New("repository not found")
 
 type service struct {
 	github       *GitHub
+	godoc        *GoDoc
 	repositories Storage
 }
 
 // NewService creates a new Service implementation which works with a Storage.
-func NewService(repositories Storage, gh *GitHub) Service {
+func NewService(repositories Storage, gh *GitHub, gd *GoDoc) Service {
 	return &service{
 		github:       gh,
+		godoc:        gd,
 		repositories: repositories,
 	}
 }
@@ -43,7 +45,9 @@ func (s *service) Get(ctx context.Context, url string) (Repository, error) {
 	}
 
 	if !exists {
-		// TODO: godoc
+		if err := s.godoc.Get(ctx, url); err != nil {
+			return Repository{}, err
+		}
 
 		repo, err := s.github.Get(ctx, url)
 		if err != nil {
