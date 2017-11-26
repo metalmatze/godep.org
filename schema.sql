@@ -1,3 +1,13 @@
+DROP TABLE versions;
+DROP TABLE statistics;
+DROP TABLE repositories;
+
+--
+
+TRUNCATE repositories CASCADE;
+
+--
+
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE TABLE repositories (
@@ -7,14 +17,22 @@ CREATE TABLE repositories (
   updated     TIMESTAMP        DEFAULT now()
 );
 CREATE UNIQUE INDEX repositories_url_uindex
-  ON public.repositories (url);
+  ON repositories (url);
 
---
-
-CREATE TABLE public.statistics (
+CREATE TABLE statistics (
   repository_id UUID,
   name          VARCHAR(64) NOT NULL,
   value         INT DEFAULT 0,
   url           VARCHAR     NOT NULL,
-  CONSTRAINT statistics_repositories_id_fk FOREIGN KEY (repository_id) REFERENCES repositories (id) ON DELETE CASCADE
+  CONSTRAINT statistics_repositories_id_fk FOREIGN KEY (repository_id) REFERENCES repositories (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE TABLE versions (
+  repository_id UUID        NOT NULL,
+  name          VARCHAR(64) NOT NULL,
+  sort_order    INT         NOT NULL,
+  published     TIMESTAMP,
+  CONSTRAINT versions_repositories_id_fk FOREIGN KEY (repository_id) REFERENCES repositories (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE UNIQUE INDEX versions_name_uindex
+  ON versions (repository_id, name);

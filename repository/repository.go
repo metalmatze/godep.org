@@ -27,6 +27,7 @@ type (
 	}
 	Topic   struct{}
 	Version struct {
-		Name string
+		Name      string
+		Published time.Time
 	}
 )

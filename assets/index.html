@@ -53,16 +53,16 @@
                         <pre>import "{{ .URL }}"</pre>
                         <pre>go get -v -u {{ .URL }}</pre>
 
-                    <h4>dep</h4>
+                        <h4>dep</h4>
                     {{ if .CurrentVersion.Name }}
                         <pre>dep ensure -add {{ .URL }}</pre>
                         <pre>[[constraint]]
-name = "{{ .URL }}"
-version = "{{ .CurrentVersion.Name }}"</pre>
+  name = "{{ .URL }}"
+  version = "{{ .CurrentVersion.Name }}"</pre>
                     {{ else }}
                         <p>This project hasn't tagged any versions yet.</p>
                     {{ end }}
-                    <hr>
+                        <hr>
 
                         <!--
                         <h3>Directories</h3>
@@ -151,7 +151,7 @@ version = "{{ .CurrentVersion.Name }}"</pre>
                         </table>
                         -->
 
-                        <p>Updated {{ .Updated | dateFormat "on Jan 02, 2006 03:04:05" }}</p>
+                        <p>Updated {{ .Updated | dateFormat "on Jan 02, 2006 15:04:05" }}</p>
 
                     </div>
 
@@ -170,15 +170,14 @@ version = "{{ .CurrentVersion.Name }}"</pre>
                     {{ end }}
                     {{ end }}
 
+                    {{ $repo := . }}
                     {{ if .Versions }}
                         <h4>Versions</h4>
                         <ul style="padding-left: 16px">
                         {{ range .Versions }}
                             <li>
-                                <a href="{{ .URL }}">{{ .Name }}</a>
+                                <a href="https://{{ $repo.URL }}/releases/tag/{{ .Name }}">{{ .Name }}</a>
                             {{ .Published | dateFormat "on Jan 02, 2006" }}
-                            {{ if .Prerelease }}(pre){{ end }}
-                            {{ if .Draft }}(draft){{ end }}
                             </li>
                         {{ end }}
                         </ul>

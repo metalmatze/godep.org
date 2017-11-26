@@ -25,8 +25,8 @@ func NewGitHubClient(token string) (*GitHub, error) {
 	}, nil
 }
 
-func (gh *GitHub) Get(ctx context.Context, url string) (Repository, error) {
-	urlParts := strings.Split(url, "/")
+func (gh *GitHub) Get(ctx context.Context, urlPath string) (Repository, error) {
+	urlParts := strings.Split(urlPath, "/")
 	owner, name := urlParts[1], urlParts[2]
 
 	var q struct {
@@ -84,7 +84,7 @@ func (gh *GitHub) Get(ctx context.Context, url string) (Repository, error) {
 	}
 
 	repo := Repository{
-		URL:         url,
+		URL:         urlPath,
 		Description: string(q.Repository.Description),
 		Updated:     time.Now(),
 		Stats: []Stat{{
@@ -110,61 +110,20 @@ func (gh *GitHub) Get(ctx context.Context, url string) (Repository, error) {
 		}},
 	}
 
-	return repo, nil
+	if len(q.Repository.Releases.Edges) > 0 {
+		for _, r := range q.Repository.Releases.Edges {
+			repo.Versions = append(repo.Versions, Version{
+				Name:      string(r.Node.Tag.Name),
+				Published: r.Node.PublishedAt.Time,
+			})
+		}
+	} else {
+		for _, r := range q.Repository.Refs.Edges {
+			repo.Versions = append(repo.Versions, Version{
+				Name: string(r.Node.Name),
+			})
+		}
+	}
 
-	//d := data{
-	//	Owner:       owner,
-	//	Name:        name,
-	//	Description: string(q.Repository.Description),
-	//	License: licenseData{
-	//		Name: string(q.Repository.LicenseInfo.SpdxID),
-	//		URL:  q.Repository.LicenseInfo.URL.URL,
-	//	},
-	//	Stats: dataStats{
-	//		Stars:        int(q.Repository.Stargazers.TotalCount),
-	//		Watchers:     int(q.Repository.Watchers.TotalCount),
-	//		Forks:        int(q.Repository.Forks.TotalCount),
-	//		Issues:       int(q.Repository.Issues.TotalCount),
-	//		PullRequests: int(q.Repository.PullRequests.TotalCount),
-	//	},
-	//}
-	//
-	//for _, e := range q.Repository.RepositoryTopics.Edges {
-	//	d.Topics = append(d.Topics, dataTopic{
-	//		Name: string(e.Node.Topic.Name),
-	//		URL:  e.Node.URL.URL,
-	//	})
-	//}
-	//
-	//if len(q.Repository.Releases.Edges) > 0 {
-	//	for _, r := range q.Repository.Releases.Edges {
-	//		d.Versions = append(d.Versions, versionData{
-	//			Name:       string(r.Node.Tag.Name),
-	//			Draft:      bool(r.Node.IsDraft),
-	//			Prerelease: bool(r.Node.IsPrerelease),
-	//			URL:        r.Node.URL.URL,
-	//			Published:  r.Node.PublishedAt.Time,
-	//		})
-	//	}
-	//
-	//	sort.Slice(d.Versions, func(i, j int) bool {
-	//		return d.Versions[i].Published.After(d.Versions[j].Published)
-	//	})
-	//} else {
-	//	for _, r := range q.Repository.Refs.Edges {
-	//		u, _ := url.Parse(fmt.Sprintf("https://github.com/%s/%s/releases/tag/%s", owner, name, r.Node.Name))
-	//		d.Versions = append(d.Versions, versionData{
-	//			Name: string(r.Node.Name),
-	//			URL:  u,
-	//		})
-	//	}
-	//}
-	//
-	//if len(d.Versions) > 0 {
-	//	d.CurrentVersion = d.Versions[0]
-	//} else {
-	//	//d.CurrentVersion = versionData{
-	//	//	Name:
-	//	//}
-	//}
+	return repo, nil
 }

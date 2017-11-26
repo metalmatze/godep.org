@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/pkg/errors"
 )
@@ -45,13 +46,29 @@ func (s *service) Get(ctx context.Context, url string) (Repository, error) {
 	}
 
 	if !exists {
-		if err := s.godoc.Get(ctx, url); err != nil {
+		godocInfo, err := s.godoc.Get(ctx, url)
+		if err != nil {
 			return Repository{}, err
 		}
 
 		repo, err := s.github.Get(ctx, url)
 		if err != nil {
 			return repo, err
+		}
+
+		if godocInfo.Imports > 0 {
+			repo.Stats = append(repo.Stats, Stat{
+				Name:  "Imports",
+				Value: godocInfo.Imports,
+				URL:   fmt.Sprintf("https://godoc.org/%s?imports", repo.URL),
+			})
+		}
+		if godocInfo.Importers > 0 {
+			repo.Stats = append(repo.Stats, Stat{
+				Name:  "Importers",
+				Value: godocInfo.Importers,
+				URL:   fmt.Sprintf("https://godoc.org/%s?importers", repo.URL),
+			})
 		}
 
 		if err := s.repositories.Create(ctx, repo); err != nil {
