@@ -6,26 +6,38 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-kit/kit/metrics"
 	"github.com/shurcooL/githubql"
 	"golang.org/x/oauth2"
 )
 
 type (
 	GitHub struct {
-		client *githubql.Client
+		client   *githubql.Client
+		apiCalls metrics.Histogram
 	}
 )
 
-func NewGitHubClient(token string) (*GitHub, error) {
-	return &GitHub{
+func NewGitHubClient(token string, apiCalls metrics.Histogram) (*GitHub, error) {
+	gh := &GitHub{
 		client: githubql.NewClient(oauth2.NewClient(
 			context.TODO(),
 			oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token}),
 		)),
-	}, nil
+		apiCalls: apiCalls.With("service", "github"),
+	}
+
+	// Initialize metric with a zero value
+	gh.apiCalls.Observe(0)
+
+	return gh, nil
 }
 
 func (gh *GitHub) Get(ctx context.Context, urlPath string) (Repository, error) {
+	defer func(start time.Time) {
+		gh.apiCalls.Observe(time.Since(start).Seconds())
+	}(time.Now())
+
 	urlParts := strings.Split(urlPath, "/")
 	owner, name := urlParts[1], urlParts[2]
 

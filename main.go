@@ -15,14 +15,28 @@ import (
 	"time"
 
 	"github.com/go-chi/chi"
+	"github.com/go-kit/kit/metrics/prometheus"
 	"github.com/gobuffalo/packr"
 	_ "github.com/lib/pq"
 	"github.com/metalmatze/godep.org/repository"
 	"github.com/oklog/run"
+	prom "github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func main() {
+	config := struct {
+		DSN         string
+		GithubToken string
+	}{
+		DSN:         os.Getenv("DSN"),
+		GithubToken: os.Getenv("GITHUB_TOKEN"),
+	}
+
+	if config.DSN == "" {
+		config.DSN = "postgres://postgres:postgres@localhost:5432?sslmode=disable"
+	}
+
 	box := packr.NewBox("./assets")
 
 	templateFuncs := template.FuncMap{
@@ -45,18 +59,25 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db, err := sql.Open("postgres", "postgres://postgres:postgres@localhost:5432?sslmode=disable")
+	db, err := sql.Open("postgres", config.DSN)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	gd, err := repository.NewGoDoc()
+	apiCalls := prometheus.NewHistogramFrom(prom.HistogramOpts{
+		Namespace: "godep",
+		Name:      "api_calls",
+		Help:      "API calls made to other services",
+		Buckets:   []float64{.025, .05, .075, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1, 1.5, 2, 3, 4, 5},
+	}, []string{"service"})
+
+	gd, err := repository.NewGoDoc(apiCalls)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	gh, err := repository.NewGitHubClient(os.Getenv("GITHUB_TOKEN"))
+	gh, err := repository.NewGitHubClient(config.GithubToken, apiCalls)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -86,8 +107,6 @@ func main() {
 	{
 		r := chi.NewRouter()
 		r.Get("/index.css", styleHandler(box.Bytes("index.css")))
-		r.Get("/flexboxgrid.min.css", styleHandler(box.Bytes("flexboxgrid.min.css")))
-		r.Get("/godoc.html", styleHandler(box.Bytes("godoc.html")))
 		r.Get("/github.com/{owner}/{name}", packageHandler(repositoryService, page))
 
 		s := http.Server{

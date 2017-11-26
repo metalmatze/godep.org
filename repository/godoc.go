@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"context"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -13,6 +12,7 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/go-kit/kit/metrics"
 	"github.com/pkg/errors"
 )
 
@@ -22,20 +22,27 @@ var (
 )
 
 type GoDoc struct {
-	client *http.Client
+	client   *http.Client
+	apiCalls metrics.Histogram
 }
 
-func NewGoDoc() (*GoDoc, error) {
-	return &GoDoc{
+func NewGoDoc(apiCalls metrics.Histogram) (*GoDoc, error) {
+	gd := &GoDoc{
 		client: &http.Client{
 			Timeout: 5 * time.Second,
 		},
-	}, nil
+		apiCalls: apiCalls.With("service", "godoc"),
+	}
+
+	// Initialize metric with a zero value
+	gd.apiCalls.Observe(0)
+
+	return gd, nil
 }
 
 func (gd *GoDoc) Get(ctx context.Context, urlPath string) (*GoDocInfo, error) {
 	defer func(start time.Time) {
-		log.Println("godoc", time.Since(start))
+		gd.apiCalls.Observe(time.Since(start).Seconds())
 	}(time.Now())
 
 	u, err := url.Parse("https://godoc.org")
