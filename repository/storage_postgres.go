@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"time"
 
 	"github.com/pkg/errors"
@@ -71,8 +70,6 @@ func (p *postgres) Get(ctx context.Context, url string) (Repository, error) {
 			if published != nil {
 				v.Published = *published
 			}
-
-			fmt.Printf("%+v\n", v)
 			r.Versions = append(r.Versions, v)
 		}
 		if err := rows.Err(); err != nil {

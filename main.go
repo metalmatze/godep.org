@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"html/template"
@@ -8,13 +9,17 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/gobuffalo/packr"
 	_ "github.com/lib/pq"
 	"github.com/metalmatze/godep.org/repository"
+	"github.com/oklog/run"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func main() {
@@ -66,14 +71,59 @@ func main() {
 		repositoryService = repository.NewService(repositories, gh, gd)
 	}
 
-	r := chi.NewRouter()
-	r.Get("/index.css", styleHandler(box.Bytes("index.css")))
-	r.Get("/flexboxgrid.min.css", styleHandler(box.Bytes("flexboxgrid.min.css")))
-	r.Get("/godoc.html", styleHandler(box.Bytes("godoc.html")))
-	r.Get("/github.com/{owner}/{name}", packageHandler(repositoryService, page))
+	var g run.Group
+	{
+		sig := make(chan os.Signal, 2)
+		signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
 
-	log.Println("starting http server on :8000")
-	log.Fatal(http.ListenAndServe(":8000", r))
+		g.Add(func() error {
+			<-sig
+			return nil
+		}, func(err error) {
+			close(sig)
+		})
+	}
+	{
+		r := chi.NewRouter()
+		r.Get("/index.css", styleHandler(box.Bytes("index.css")))
+		r.Get("/flexboxgrid.min.css", styleHandler(box.Bytes("flexboxgrid.min.css")))
+		r.Get("/godoc.html", styleHandler(box.Bytes("godoc.html")))
+		r.Get("/github.com/{owner}/{name}", packageHandler(repositoryService, page))
+
+		s := http.Server{
+			Addr:    ":8000",
+			Handler: r,
+		}
+
+		g.Add(func() error {
+			log.Println("starting http server on :8000")
+			return s.ListenAndServe()
+		}, func(err error) {
+			log.Println("shutting down http server on :8000")
+			s.Shutdown(context.Background())
+		})
+	}
+	{
+		r := chi.NewRouter()
+		r.Handle("/metrics", promhttp.Handler())
+
+		s := http.Server{
+			Addr:    ":8001",
+			Handler: r,
+		}
+
+		g.Add(func() error {
+			log.Println("starting internal http server on :8001")
+			return s.ListenAndServe()
+		}, func(err error) {
+			log.Println("shutting down internal http server on :8001")
+			s.Shutdown(context.Background())
+		})
+	}
+
+	if err := g.Run(); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func styleHandler(d []byte) http.HandlerFunc {
