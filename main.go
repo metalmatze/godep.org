@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -15,6 +14,8 @@ import (
 	"time"
 
 	"github.com/go-chi/chi"
+	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/log/level"
 	"github.com/go-kit/kit/metrics/prometheus"
 	"github.com/gobuffalo/packr"
 	_ "github.com/lib/pq"
@@ -37,6 +38,12 @@ func main() {
 		config.DSN = "postgres://postgres:postgres@localhost:5432?sslmode=disable"
 	}
 
+	logger := log.NewLogfmtLogger(log.NewSyncWriter(os.Stdout))
+	logger = log.WithPrefix(logger,
+		"ts", log.DefaultTimestampUTC,
+		"caller", log.DefaultCaller,
+	)
+
 	box := packr.NewBox("./assets")
 
 	templateFuncs := template.FuncMap{
@@ -56,12 +63,14 @@ func main() {
 	page.Funcs(templateFuncs)
 	page, err := page.Parse(box.String("index.html"))
 	if err != nil {
-		log.Fatal(err)
+		logger.Log("msg", "failed to parse index.html template", "err", err)
+		os.Exit(2)
 	}
 
 	db, err := sql.Open("postgres", config.DSN)
 	if err != nil {
-		log.Fatal(err)
+		logger.Log("msg", "failed to open sql connection to postgres", "err", err)
+		os.Exit(2)
 	}
 	defer db.Close()
 
@@ -74,12 +83,14 @@ func main() {
 
 	gd, err := repository.NewGoDoc(apiCalls)
 	if err != nil {
-		log.Fatal(err)
+		logger.Log("msg", "failed to create godoc client", "err", err)
+		os.Exit(2)
 	}
 
 	gh, err := repository.NewGitHubClient(config.GithubToken, apiCalls)
 	if err != nil {
-		log.Fatal(err)
+		logger.Log("msg", "failed to create github client", "err", err)
+		os.Exit(2)
 	}
 
 	var repositories repository.Storage
@@ -115,10 +126,10 @@ func main() {
 		}
 
 		g.Add(func() error {
-			log.Println("starting http server on :8000")
+			level.Info(logger).Log("msg", "starting http server on :8000")
 			return s.ListenAndServe()
 		}, func(err error) {
-			log.Println("shutting down http server on :8000")
+			level.Info(logger).Log("msg", "shutting down http server on :8000")
 			s.Shutdown(context.Background())
 		})
 	}
@@ -132,16 +143,17 @@ func main() {
 		}
 
 		g.Add(func() error {
-			log.Println("starting internal http server on :8001")
+			level.Info(logger).Log("msg", "starting internal http server on :8001")
 			return s.ListenAndServe()
 		}, func(err error) {
-			log.Println("shutting down internal http server on :8001")
+			level.Info(logger).Log("msg", "shutting down internal http server on :8001")
 			s.Shutdown(context.Background())
 		})
 	}
 
 	if err := g.Run(); err != nil {
-		log.Fatal(err)
+		level.Error(logger).Log("err", err)
+		os.Exit(1)
 	}
 }
 
