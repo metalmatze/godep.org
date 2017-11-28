@@ -48,7 +48,14 @@
                 <div class="row">
                     <div class="col-xs-12 col-md-8 col-lg-9 content">
                         <p>{{ .Description }}</p>
-                        <hr>
+                        <p>
+                            <a href="https://godoc.org/{{ .URL }}">
+                                <img src="https://godoc.org/{{ .URL }}?status.svg" alt="GoDoc">
+                            </a>
+                            <a href="https://goreportcard.com/report/{{ .URL }}">
+                                <img src="https://goreportcard.com/badge/{{ .URL }}" alt="GoReportCard">
+                            </a>
+                        </p>
 
                         <pre>import "{{ .URL }}"</pre>
                         <pre>go get -v -u {{ .URL }}</pre>
@@ -63,93 +70,6 @@
                         <p>This project hasn't tagged any versions yet.</p>
                     {{ end }}
                         <hr>
-
-                        <!--
-                        <h3>Directories</h3>
-
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>Path</th>
-                                <th>Synopsis</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td><a href="#">cmd/dep</a></td>
-                                <td>Command dep is a prototype dependency management tool.</td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">internal/feedback</a></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">internal/fs</a></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">internal/gps</a></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">internal/gps/internal/pb</a></td>
-                                <td>Package pb provides generated Protocol Buffers for cache serialization.</td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">internal/gps/paths</a></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">internal/gps/pkgtree</a></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">internal/importers</a></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">internal/importers/base</a></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">internal/importers/glide</a></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">internal/importers/godep</a></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">internal/importers/govend</a></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">internal/importers/gvt</a></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">internal/importers/importertest</a></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">internal/importers/vndr</a></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">internal/test</a></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">internal/test/integration</a></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">vendor/github.com/pkg/errors</a></td>
-                                <td>Package errors provides simple error handling primitives.</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        -->
 
                         <p>Updated {{ .Updated | dateFormat "on Jan 02, 2006 15:04:05" }}</p>
 
