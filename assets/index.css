@@ -162,6 +162,13 @@ main.page {
     border-bottom: 1px solid #ddd;
 }
 
+.page-package .content .dependencies {
+    font-size: 12px;
+}
+.page-package .content .dependencies p {
+    margin: 5px 0;
+}
+
 .page-package .sidebar {
     padding-left: 32px;
     border-left: 1px solid #d1e1f0;
