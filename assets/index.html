@@ -9,6 +9,7 @@
     <meta name="googlebot" content="index,follow">
     <title>{{ .URL | repositoryName }} - godep.org - Packages for Go</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto:300,300i,400,700">
     <link rel="stylesheet" href="/index.css">
 </head>
 
@@ -60,7 +61,10 @@
                         <pre>import "{{ .URL }}"</pre>
                         <pre>go get -v -u {{ .URL }}</pre>
 
-                        <h4>dep</h4>
+                        <h3>dep</h3>
+
+                        <p>Add this as a dependency to your project:</p>
+
                     {{ if .CurrentVersion.Name }}
                         <pre>dep ensure -add {{ .URL }}</pre>
                         <pre>[[constraint]]

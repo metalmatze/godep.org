@@ -5,7 +5,7 @@ html {
 body {
     margin: 0;
     background-color: white;
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', Arial, sans-serif;
     font-size: 16px;
     color: #222222;
 
@@ -54,6 +54,7 @@ pre {
     border-radius: 4px;
     background-color: #f5f5f5;
     color: #222;
+    font-family: 'Roboto Mono', monospace;
     font-size: 13px;
     white-space: pre;
     word-break: normal;
@@ -125,14 +126,14 @@ main.page {
     float: left;
     margin: 0;
     font-size: 48px;
-    font-weight: 200;
+    font-weight: 300;
 }
 
 .page-package header h3.version {
     float: left;
     margin: 28px 0 0 16px;
     font-size: 18px;
-    font-weight: 200;
+    font-weight: 300;
     font-style: italic;
     color: #5e5e5e;
 
