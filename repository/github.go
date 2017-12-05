@@ -12,12 +12,14 @@ import (
 )
 
 type (
+	// GitHub makes API calls to GitHub
 	GitHub struct {
 		client   *githubql.Client
 		apiCalls metrics.Histogram
 	}
 )
 
+// NewGitHubClient initializes a new GitHub client from a token
 func NewGitHubClient(token string, apiCalls metrics.Histogram) (*GitHub, error) {
 	gh := &GitHub{
 		client: githubql.NewClient(oauth2.NewClient(
@@ -33,6 +35,7 @@ func NewGitHubClient(token string, apiCalls metrics.Histogram) (*GitHub, error) 
 	return gh, nil
 }
 
+// Get a repository's data from its urlPath
 func (gh *GitHub) Get(ctx context.Context, urlPath string) (Repository, error) {
 	defer func(start time.Time) {
 		gh.apiCalls.Observe(time.Since(start).Seconds())
@@ -99,7 +102,7 @@ func (gh *GitHub) Get(ctx context.Context, urlPath string) (Repository, error) {
 		URL:         urlPath,
 		Description: string(q.Repository.Description),
 		Updated:     time.Now(),
-		Stats: []Stat{{
+		Statistics: []Statistic{{
 			Name:  "Forks",
 			Value: int(q.Repository.Forks.TotalCount),
 			URL:   fmt.Sprintf("https://github.com/%s/%s/network", owner, name),

@@ -26,7 +26,8 @@ type (
 	}
 )
 
-var NotFoundErr = errors.New("repository not found")
+// ErrNotFound is returned when a Repository was not found
+var ErrNotFound = errors.New("repository not found")
 
 type service struct {
 	github       *GitHub
@@ -61,14 +62,14 @@ func (s *service) Get(ctx context.Context, url string) (Repository, error) {
 		}
 
 		if godocInfo.Imports > 0 {
-			repo.Stats = append(repo.Stats, Stat{
+			repo.Statistics = append(repo.Statistics, Statistic{
 				Name:  "Imports",
 				Value: godocInfo.Imports,
 				URL:   fmt.Sprintf("https://godoc.org/%s?imports", repo.URL),
 			})
 		}
 		if godocInfo.Importers > 0 {
-			repo.Stats = append(repo.Stats, Stat{
+			repo.Statistics = append(repo.Statistics, Statistic{
 				Name:  "Importers",
 				Value: godocInfo.Importers,
 				URL:   fmt.Sprintf("https://godoc.org/%s?importers", repo.URL),
@@ -81,13 +82,14 @@ func (s *service) Get(ctx context.Context, url string) (Repository, error) {
 	}
 
 	repo, err := s.repositories.Get(ctx, url)
-	if err != nil && err != NotFoundErr {
+	if err != nil && err != ErrNotFound {
 		return repo, err
 	}
 
 	return repo, err
 }
 
+// Homepage contains urls of repositories with different categories
 type Homepage struct {
 	Popular []string
 	Latest  []string

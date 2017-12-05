@@ -121,7 +121,7 @@ func main() {
 		r.Get("/", homeHandler(rs, homeTmpl))
 		r.Get("/faq", faqHandler(faqTmpl))
 		r.Get("/main.css", styleHandler(box.Bytes("main.css")))
-		r.Get("/github.com/{owner}/{name}", repository.GithubHandler(rs, repositoryTmpl, notFoundTmpl))
+		r.Get("/github.com/{owner}/{name}", repository.GitHubHandler(rs, repositoryTmpl, notFoundTmpl))
 		r.NotFound(notFoundHandler(notFoundTmpl))
 
 		s := http.Server{

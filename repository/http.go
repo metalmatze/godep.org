@@ -9,7 +9,8 @@ import (
 	"github.com/go-chi/chi"
 )
 
-func GithubHandler(repositories Service, tmpl *template.Template, notfoundTmpl *template.Template) http.HandlerFunc {
+// GitHubHandler renders and responds with a html page to a http request
+func GitHubHandler(repositories Service, tmpl *template.Template, notfoundTmpl *template.Template) http.HandlerFunc {
 	type Page struct {
 		Title      string
 		Repository Repository
@@ -26,7 +27,7 @@ func GithubHandler(repositories Service, tmpl *template.Template, notfoundTmpl *
 		}
 
 		repo, err := repositories.Get(r.Context(), uri.String())
-		if err == NotFoundErr {
+		if err == ErrNotFound {
 			w.WriteHeader(http.StatusNotFound)
 			notfoundTmpl.ExecuteTemplate(w, "layout", nil)
 			return

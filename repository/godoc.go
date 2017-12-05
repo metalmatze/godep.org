@@ -21,11 +21,13 @@ var (
 	reUpdated = regexp.MustCompile(`Updated (.{10})\.`)
 )
 
+// GoDoc scrapes godoc.org
 type GoDoc struct {
 	client   *http.Client
 	apiCalls metrics.Histogram
 }
 
+// NewGoDoc initializes GoDoc with a http client
 func NewGoDoc(apiCalls metrics.Histogram) (*GoDoc, error) {
 	gd := &GoDoc{
 		client: &http.Client{
@@ -40,6 +42,7 @@ func NewGoDoc(apiCalls metrics.Histogram) (*GoDoc, error) {
 	return gd, nil
 }
 
+// Get godoc's repository data from a urlPath
 func (gd *GoDoc) Get(ctx context.Context, urlPath string) (*GoDocInfo, error) {
 	defer func(start time.Time) {
 		gd.apiCalls.Observe(time.Since(start).Seconds())
@@ -62,7 +65,7 @@ func (gd *GoDoc) Get(ctx context.Context, urlPath string) (*GoDocInfo, error) {
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, NotFoundErr
+		return nil, ErrNotFound
 	}
 
 	doc, err := goquery.NewDocumentFromResponse(resp)
@@ -74,6 +77,7 @@ func (gd *GoDoc) Get(ctx context.Context, urlPath string) (*GoDocInfo, error) {
 	return parseInfo(strings.NewReader(s.Text()))
 }
 
+// GoDocInfo is the parsed meta information from a godoc.org page
 type GoDocInfo struct {
 	Imports   int
 	Importers int

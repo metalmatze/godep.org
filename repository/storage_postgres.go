@@ -27,7 +27,7 @@ func (p *postgres) Get(ctx context.Context, url string) (Repository, error) {
 
 		err := row.Scan(&id, &r.URL, &r.Description, &r.Updated)
 		if err != nil && err.Error() == "sql: no rows in result set" {
-			return r, NotFoundErr
+			return r, ErrNotFound
 		}
 	}
 
@@ -42,11 +42,11 @@ func (p *postgres) Get(ctx context.Context, url string) (Repository, error) {
 		defer rows.Close()
 
 		for rows.Next() {
-			s := Stat{}
+			s := Statistic{}
 			if err := rows.Scan(&s.Name, &s.Value, &s.URL); err != nil {
 				return r, errors.Wrap(err, "failed to scan repository stat")
 			}
-			r.Stats = append(r.Stats, s)
+			r.Statistics = append(r.Statistics, s)
 		}
 		if err := rows.Err(); err != nil {
 			return r, errors.Wrap(err, "failed to retrieve repository statistics")
@@ -180,7 +180,7 @@ func (p *postgres) Create(ctx context.Context, repo Repository) error {
 		}
 		defer stmt.Close()
 
-		for _, stat := range repo.Stats {
+		for _, stat := range repo.Statistics {
 			if _, err := stmt.ExecContext(ctx, id, stat.Name, stat.Value, stat.URL); err != nil {
 				tx.Rollback()
 				return errors.Wrap(err, "failed to insert repository stat")
