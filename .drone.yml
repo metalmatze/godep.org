@@ -1,0 +1,38 @@
+workspace:
+  base: /go
+  path: src/github.com/metalmatze/godep.org
+
+pipeline:
+  dep:
+    image: metalmatze/dep:1.9
+    commands:
+      - dep ensure -v -vendor-only
+
+  lint:
+    group: go
+    image: golang:1.9
+    pull: true
+    commands:
+      - make fmt
+      - make vet
+      - make lint
+    when:
+      event: [ push, tag, pull_request ]
+
+  test:
+    group: go
+    image: golang:1.9
+    pull: true
+    commands:
+      - make test
+    when:
+      event: [ push, tag, pull_request ]
+
+  build:
+    group: go
+    image: golang:1.9
+    pull: true
+    commands:
+      - make build
+    when:
+      event: [ push, tag, pull_request ]
