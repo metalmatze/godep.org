@@ -36,3 +36,11 @@ pipeline:
       - make build
     when:
       event: [ push, tag, pull_request ]
+
+  docker-tip:
+    image: plugins/docker
+    repo: metalmatze/godep.org
+    secrets: [ docker_username, docker_password ]
+    tag: [ latest ]
+    when:
+      branch: master
