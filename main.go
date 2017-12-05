@@ -93,25 +93,25 @@ func main() {
 		})
 	}
 	{
-		notFoundTmpl, err := loadTemplates(box, "partials/layout.html", "404.html")
+		notFoundTmpl, err := loadTemplates(box, "_layout.html", "404.html")
 		if err != nil {
 			level.Warn(logger).Log("msg", "failed to load templates", "err", err)
 			os.Exit(2)
 		}
 
-		homeTmpl, err := loadTemplates(box, "partials/layout.html", "home.html")
+		homeTmpl, err := loadTemplates(box, "_layout.html", "home.html")
 		if err != nil {
 			level.Warn(logger).Log("msg", "failed to load templates", "err", err)
 			os.Exit(2)
 		}
 
-		faqTmpl, err := loadTemplates(box, "partials/layout.html", "faq.html")
+		faqTmpl, err := loadTemplates(box, "_layout.html", "faq.html")
 		if err != nil {
 			level.Warn(logger).Log("msg", "failed to load templates", "err", err)
 			os.Exit(2)
 		}
 
-		repositoryTmpl, err := loadTemplates(box, "partials/layout.html", "repository.html")
+		repositoryTmpl, err := loadTemplates(box, "_layout.html", "repository.html")
 		if err != nil {
 			level.Warn(logger).Log("msg", "failed to load templates", "err", err)
 			os.Exit(2)
@@ -120,7 +120,7 @@ func main() {
 		r := chi.NewRouter()
 		r.Get("/", homeHandler(rs, homeTmpl))
 		r.Get("/faq", faqHandler(faqTmpl))
-		r.Get("/index.css", styleHandler(box.Bytes("index.css")))
+		r.Get("/main.css", styleHandler(box.Bytes("main.css")))
 		r.Get("/github.com/{owner}/{name}", repository.GithubHandler(rs, repositoryTmpl, notFoundTmpl))
 		r.NotFound(notFoundHandler(notFoundTmpl))
 
