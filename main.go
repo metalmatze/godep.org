@@ -3,10 +3,8 @@ package main
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"html/template"
 	"net/http"
-	"net/url"
 	"os"
 	"os/signal"
 	"strings"
@@ -45,27 +43,6 @@ func main() {
 	)
 
 	box := packr.NewBox("./assets")
-
-	templateFuncs := template.FuncMap{
-		"dateFormat": func(format string, t time.Time) string {
-			if t.IsZero() {
-				return ""
-			}
-			return t.Format(format)
-		},
-		"repositoryName": func(url string) string {
-			s := strings.Split(url, "/")
-			return s[len(s)-1]
-		},
-	}
-
-	page := template.New("page")
-	page.Funcs(templateFuncs)
-	page, err := page.Parse(box.String("index.html"))
-	if err != nil {
-		logger.Log("msg", "failed to parse index.html template", "err", err)
-		os.Exit(2)
-	}
 
 	db, err := sql.Open("postgres", config.DSN)
 	if err != nil {
@@ -116,9 +93,36 @@ func main() {
 		})
 	}
 	{
+		notFoundTmpl, err := loadTemplates(box, "partials/layout.html", "404.html")
+		if err != nil {
+			level.Warn(logger).Log("msg", "failed to load templates", "err", err)
+			os.Exit(2)
+		}
+
+		homeTmpl, err := loadTemplates(box, "partials/layout.html", "home.html")
+		if err != nil {
+			level.Warn(logger).Log("msg", "failed to load templates", "err", err)
+			os.Exit(2)
+		}
+
+		faqTmpl, err := loadTemplates(box, "partials/layout.html", "faq.html")
+		if err != nil {
+			level.Warn(logger).Log("msg", "failed to load templates", "err", err)
+			os.Exit(2)
+		}
+
+		repositoryTmpl, err := loadTemplates(box, "partials/layout.html", "repository.html")
+		if err != nil {
+			level.Warn(logger).Log("msg", "failed to load templates", "err", err)
+			os.Exit(2)
+		}
+
 		r := chi.NewRouter()
+		r.Get("/", homeHandler(homeTmpl))
+		r.Get("/faq", faqHandler(faqTmpl))
 		r.Get("/index.css", styleHandler(box.Bytes("index.css")))
-		r.Get("/github.com/{owner}/{name}", packageHandler(repositoryService, page))
+		r.Get("/github.com/{owner}/{name}", repository.GithubHandler(repositoryService, repositoryTmpl, notFoundTmpl))
+		r.NotFound(notFoundHandler(notFoundTmpl))
 
 		s := http.Server{
 			Addr:    ":8000",
@@ -157,37 +161,61 @@ func main() {
 	}
 }
 
+func loadTemplates(box packr.Box, templates ...string) (*template.Template, error) {
+	tmpl := template.New("page")
+	tmpl.Funcs(template.FuncMap{
+		"dateFormat": func(format string, t time.Time) string {
+			if t.IsZero() {
+				return ""
+			}
+			return t.Format(format)
+		},
+		"repositoryName": func(url string) string {
+			s := strings.Split(url, "/")
+			return s[len(s)-1]
+		},
+	})
+
+	var err error
+	for _, t := range templates {
+		tmpl, err = tmpl.Parse(box.String(t))
+		if err != nil {
+			return tmpl, err
+		}
+	}
+
+	return tmpl, nil
+}
+
+func notFoundHandler(tmpl *template.Template) http.HandlerFunc {
+	type Page struct{ Title string }
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+		tmpl.ExecuteTemplate(w, "layout", Page{Title: "Not Found"})
+	}
+}
+
+func homeHandler(tmpl *template.Template) http.HandlerFunc {
+	type Page struct {
+		Title string
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		p := Page{}
+		tmpl.ExecuteTemplate(w, "layout", p)
+	}
+}
+
+func faqHandler(tmpl *template.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		tmpl.ExecuteTemplate(w, "layout", nil)
+	}
+}
+
 func styleHandler(d []byte) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/css")
 		w.Write(d)
-	}
-}
-
-func packageHandler(repositories repository.Service, page *template.Template) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		owner := chi.URLParam(r, "owner")
-		name := chi.URLParam(r, "name")
-
-		uri, err := url.Parse(fmt.Sprintf("github.com/%s/%s", owner, name))
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		repo, err := repositories.Get(r.Context(), uri.String())
-		if err == repository.NotFoundErr {
-			http.Error(w, err.Error(), http.StatusNotFound)
-			return
-		}
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		if err := page.Execute(w, repo); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
 	}
 }

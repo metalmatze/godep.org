@@ -1,0 +1,331 @@
+{{ define "content" }}
+<div class="container">
+    <div class="col-xs-12">
+        <div class="page-package">
+            <div class="row">
+                <div class="col-xs-12">
+                    <header>
+                        <h1 class="title name">{{ .Repository.URL | repositoryName }}</h1>
+                        <h3 class="version">{{ .Repository.CurrentVersion.Name }}</h3>
+                        <div class="clearfix"></div>
+                    </header>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-8 col-lg-9 content">
+                    <p>{{ .Repository.Description }}</p>
+                    <p>
+                        <a href="https://godoc.org/{{ .Repository.URL }}">
+                            <img src="https://godoc.org/{{ .Repository.URL }}?status.svg" alt="GoDoc">
+                        </a>
+                        <a href="https://goreportcard.com/report/{{ .Repository.URL }}">
+                            <img src="https://goreportcard.com/badge/{{ .Repository.URL }}" alt="GoReportCard">
+                        </a>
+                    </p>
+
+                    <pre>import "{{ .Repository.URL }}"</pre>
+                    <pre>go get -v -u {{ .Repository.URL }}</pre>
+
+                    <h3>dep</h3>
+
+                    <p>Add this as a dependency to your project:</p>
+
+                {{ if .Repository.CurrentVersion.Name }}
+                    <pre>dep ensure -add {{ .Repository.URL }}</pre>
+                    <pre>[[constraint]]
+  name = "{{ .Repository.URL }}"
+  version = "{{ .Repository.CurrentVersion.Name }}"</pre>
+                {{ else }}
+                    <p>This project hasn't tagged any versions yet.</p>
+                {{ end }}
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <h4>Dependencies</h4>
+
+                            <div class="dependencies">
+                                <p>
+                                    <a href="/github.com/djherbis/buffer">github.com/djherbis/buffer</a><br>
+                                    &nbsp;&nbsp;version = "^1.0.0"
+                                </p>
+                                <p>
+                                    <a href="/github.com/djherbis/nio">github.com/djherbis/nio</a><br>
+                                    &nbsp;&nbsp;version = "^2.0.3"
+                                </p>
+                                <p>
+                                    <a href="/github.com/go-kit/kit">github.com/go-kit/kit</a><br>
+                                    &nbsp;&nbsp;version = ">=0.4.0, <1.0.0"
+                                </p>
+                                <p>
+                                    <a href="/github.com/google/btree">github.com/google/btree</a><br>
+                                    &nbsp;&nbsp;branch = "master"
+                                </p>
+                                <p>
+                                    <a href="/github.com/hashicorp/go-sockaddr">github.com/hashicorp/go-sockaddr</a><br>
+                                    &nbsp;&nbsp;revision = "acd314c5781ea706c710d9ea70069fd2e110d61d"
+                                </p>
+                                <p>
+                                    <a href="/github.com/hashicorp/memberlist">github.com/hashicorp/memberlist</a><br>
+                                    &nbsp;&nbsp;branch = "master"
+                                </p>
+                                <p>
+                                    <a href="/github.com/oklog/ulid">github.com/oklog/ulid</a><br>
+                                    &nbsp;&nbsp;version = ">=0.3.0, <1.0.0"
+                                </p>
+                                <p>
+                                    <a href="/github.com/pborman/uuid">github.com/pborman/uuid</a><br>
+                                    &nbsp;&nbsp;version = "^1.0.0"
+                                </p>
+                                <p>
+                                    <a href="/github.com/pkg/errors">github.com/pkg/errors</a><br>
+                                    &nbsp;&nbsp;version = ">=0.8.0, <1.0.0"
+                                </p>
+                                <p>
+                                    <a href="/github.com/prometheus/client_golang">github.com/prometheus/client_golang</a><br>
+                                    &nbsp;&nbsp;version = ">=0.8.0, <1.0.0"
+                                </p>
+                                <p>
+                                    <a href="/github.com/prometheus/prometheus">github.com/prometheus/prometheus</a><br>
+                                    &nbsp;&nbsp;version = "^1.4.1"
+                                </p>
+                            </div>
+
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <h4>Locked Dependencies</h4>
+
+                            <div class="dependencies">
+
+                                <p>
+                                    <a href="/github.com/armon/go-metrics">github.com/armon/go-metrics</a><br>
+                                    &nbsp;&nbsp;branch = "master"<br>
+                                    &nbsp;&nbsp;revision = "93f237eba9b0602f3e73710416558854a81d9337"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/beorn7/perks">github.com/beorn7/perks</a><br>
+                                    &nbsp;&nbsp;branch = "master"<br>
+                                    &nbsp;&nbsp;packages = ["quantile"]<br>
+                                    &nbsp;&nbsp;revision = "4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/djherbis/buffer">github.com/djherbis/buffer</a><br>
+                                    &nbsp;&nbsp;packages = [".","limio","wrapio"]<br>
+                                    &nbsp;&nbsp;revision = "4972e2bf4a27dbd7c43140c959b85e8c1d2f5536"<br>
+                                    &nbsp;&nbsp;version = "v1.0"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/djherbis/nio">github.com/djherbis/nio</a><br>
+                                    &nbsp;&nbsp;revision = "824ca9017eeb2a422fdda7ae9dba05d3ab019dfa"<br>
+                                    &nbsp;&nbsp;version = "v2.0.3"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/go-kit/kit">github.com/go-kit/kit</a><br>
+                                    &nbsp;&nbsp;packages = ["log","log/level"]<br>
+                                    &nbsp;&nbsp;revision = "fadad6fffe0466b19df9efd9acde5c9a52df5fa4"<br>
+                                    &nbsp;&nbsp;version = "v0.4.0"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/go-logfmt/logfmt">github.com/go-logfmt/logfmt</a><br>
+                                    &nbsp;&nbsp;revision = "b41e73ee155f0507715ee349722291f5f5e50a5a"<br>
+                                    &nbsp;&nbsp;version = "v0.3.0"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/go-stack/stack">github.com/go-stack/stack</a><br>
+                                    &nbsp;&nbsp;revision = "100eb0c0a9c5b306ca2fb4f165df21d80ada4b82"<br>
+                                    &nbsp;&nbsp;version = "v1.5.2"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/golang/protobuf">github.com/golang/protobuf</a><br>
+                                    &nbsp;&nbsp;branch = "master"<br>
+                                    &nbsp;&nbsp;packages = ["proto"]<br>
+                                    &nbsp;&nbsp;revision = "2bba0603135d7d7f5cb73b2125beeda19c09f4ef"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/google/btree">github.com/google/btree</a><br>
+                                    &nbsp;&nbsp;branch = "master"<br>
+                                    &nbsp;&nbsp;revision = "316fb6d3f031ae8f4d457c6c5186b9e3ded70435"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/hashicorp/errwrap">github.com/hashicorp/errwrap</a><br>
+                                    &nbsp;&nbsp;branch = "master"<br>
+                                    &nbsp;&nbsp;revision = "7554cd9344cec97297fa6649b055a8c98c2a1e55"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/hashicorp/go-msgpack">github.com/hashicorp/go-msgpack</a><br>
+                                    &nbsp;&nbsp;branch = "master"<br>
+                                    &nbsp;&nbsp;packages = ["codec"]<br>
+                                    &nbsp;&nbsp;revision = "fa3f63826f7c23912c15263591e65d54d080b458"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/hashicorp/go-multierror">github.com/hashicorp/go-multierror</a><br>
+                                    &nbsp;branch = "master"<br>
+                                    &nbsp;packages = ["."]<br>
+                                    &nbsp;revision = "ed905158d87462226a13fe39ddf685ea65f1c11f"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/hashicorp/go-sockaddr">github.com/hashicorp/go-sockaddr</a><br>
+                                    &nbsp;&nbsp;revision = "acd314c5781ea706c710d9ea70069fd2e110d61d"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/hashicorp/memberlist">github.com/hashicorp/memberlist</a><br>
+                                    &nbsp;&nbsp;branch = "master"
+                                    &nbsp;&nbsp;packages = ["."]
+                                    &nbsp;&nbsp;revision = "022f08198efdd4f4a5eb6645123ad88a20a0afc0"
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/kr/logfmt">github.com/kr/logfmt</a><br>
+                                    &nbsp;&nbsp;branch = "master"<br>
+                                    &nbsp;&nbsp;revision = "b84e30acd515aadc4b783ad4ff83aff3299bdfe0"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/matttproud/golang_protobuf_extensions">github.com/matttproud/golang_protobuf_extensions</a><br>
+                                    &nbsp;&nbsp;packages = ["pbutil"]<br>
+                                    &nbsp;&nbsp;revision = "3247c84500bff8d9fb6d579d800f20b3e091582c"<br>
+                                    &nbsp;&nbsp;version = "v1.0.0"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/miekg/dns">github.com/miekg/dns</a><br>
+                                    &nbsp;&nbsp;branch = "master"<br>
+                                    &nbsp;&nbsp;revision = "6ebcb714d36901126ee2807031543b38c56de963"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/oklog/ulid">github.com/oklog/ulid</a><br>
+                                    &nbsp;&nbsp;revision = "d311cb43c92434ec4072dfbbda3400741d0a6337"<br>
+                                    &nbsp;&nbsp;version = "v0.3.0"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/pborman/uuid">github.com/pborman/uuid</a><br>
+                                    &nbsp;&nbsp;revision = "a97ce2ca70fa5a848076093f05e639a89ca34d06"<br>
+                                    &nbsp;&nbsp;version = "v1.0"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/petar/GoLLRB">github.com/petar/GoLLRB</a><br>
+                                    &nbsp;&nbsp;branch = "master"<br>
+                                    &nbsp;&nbsp;packages = ["llrb"]<br>
+                                    &nbsp;&nbsp;revision = "53be0d36a84c2a886ca057d34b6aa4468df9ccb4"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/pkg/errors">github.com/pkg/errors</a><br>
+                                    &nbsp;&nbsp;revision = "3866ebc348c54054262feae422da428fe6cf147d"<br>
+                                    &nbsp;&nbsp;version = "v0.8.0"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/prometheus/client_golang">github.com/prometheus/client_golang</a><br>
+                                    &nbsp;&nbsp;packages = ["prometheus","prometheus/promhttp"]<br>
+                                    &nbsp;&nbsp;revision = "c5b7fccd204277076155f10851dad72b76a49317"<br>
+                                    &nbsp;&nbsp;version = "v0.8.0"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/prometheus/client_model">github.com/prometheus/client_model</a><br>
+                                    &nbsp;&nbsp;branch = "master"<br>
+                                    &nbsp;&nbsp;packages = ["go"]<br>
+                                    &nbsp;&nbsp;revision = "6f3806018612930941127f2a7c6c453ba2c527d2"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/prometheus/common">github.com/prometheus/common</a><br>
+                                    &nbsp;&nbsp;branch = "master"<br>
+                                    &nbsp;&nbsp;packages = ["expfmt","internal/bitbucket.org/ww/goautoneg","model"]<br>
+                                    &nbsp;&nbsp;revision = "49fee292b27bfff7f354ee0f64e1bc4850462edf"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/prometheus/procfs">github.com/prometheus/procfs</a><br>
+                                    &nbsp;&nbsp;branch = "master"<br>
+                                    &nbsp;&nbsp;packages = [".","xfs"]<br>
+                                    &nbsp;&nbsp;revision = "a1dba9ce8baed984a2495b658c82687f8157b98f"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/prometheus/prometheus">github.com/prometheus/prometheus</a><br>
+                                    &nbsp;&nbsp;packages = ["util/flock"]<br>
+                                    &nbsp;&nbsp;revision = "bd1182d29f462c39544f94cc822830e1c64cf55b"<br>
+                                    &nbsp;&nbsp;version = "v1.5.2"<br>
+                                </p>
+
+                                <p>
+                                    <a href="/github.com/sean-/seed">github.com/sean-/seed</a><br>
+                                    &nbsp;&nbsp;branch = "master"<br>
+                                    &nbsp;&nbsp;revision = "e2103e2c35297fb7e17febb81e49b312087a2372"<br>
+                                </p>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <p>Updated {{ .Repository.Updated | dateFormat "on Jan 02, 2006 15:04:05" }}</p>
+
+                </div>
+
+                <div class="col-xs-12 col-md-4 col-lg-3 sidebar">
+                {{ if .Repository.License.Name }}
+                    <h4>License</h4>
+                    <p>
+                        <a href="{{ .Repository.License.URL }}">{{ .Repository.License.Name }}</a>
+                    </p>
+                {{ end }}
+
+                {{ if .Repository.Topics }}
+                    <h4>Tags</h4>
+                {{ range .Repository.Topics }}
+                    <a href="{{ .URL }}">#{{ .Name }}</a>
+                {{ end }}
+                {{ end }}
+
+                {{ $repo := .Repository }}
+                {{ if .Repository.Versions }}
+                    <h4>Versions</h4>
+                    <ul style="padding-left: 16px">
+                    {{ range .Repository.Versions }}
+                        <li>
+                            <a href="https://{{ $repo.URL }}/releases/tag/{{ .Name }}">{{ .Name }}</a>
+                        {{ .Published | dateFormat "on Jan 02, 2006" }}
+                        </li>
+                    {{ end }}
+                    </ul>
+                {{ end }}
+
+                    <h4>Stats</h4>
+                    <table>
+                        <tbody>
+                        {{ range .Repository.Stats }}
+                        <tr>
+                            <td><a href="{{ .URL }}">{{ .Name }}</a></td>
+                            <td>{{ .Value }}</td>
+                        </tr>
+                        {{ end }}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}

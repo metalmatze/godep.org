@@ -94,13 +94,14 @@ header.page h1 em {
     font-style: italic;
 }
 
-/*header.page nav {*/
-/*margin-top: 16px;*/
-/*}*/
-
 header.page nav a {
+    margin-right: 16px;
     text-decoration: none;
     color: #375eab;
+}
+
+header.page nav a:last-child {
+    margin-right: 0;
 }
 
 header.page nav a:hover {
@@ -116,6 +117,16 @@ main.page {
     padding-bottom: 64px;
 }
 
+main.page .title {
+    font-size: 48px;
+    font-weight: 300;
+}
+
+main.page .hero {
+    font-size: 64px;
+    text-align: center;
+}
+
 .page-package header {
     padding: 24px 0;
     margin-bottom: 24px;
@@ -125,8 +136,6 @@ main.page {
 .page-package header h1.name {
     float: left;
     margin: 0;
-    font-size: 48px;
-    font-weight: 300;
 }
 
 .page-package header h3.version {
@@ -165,6 +174,7 @@ main.page {
 .page-package .content .dependencies {
     font-size: 12px;
 }
+
 .page-package .content .dependencies p {
     margin: 5px 0;
 }

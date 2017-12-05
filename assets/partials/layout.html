@@ -1,0 +1,75 @@
+{{ define "layout" }}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Packages for Go">
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <title>{{ .Title }}godep.org - Packages for Go</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto:300,300i,400,700">
+    <link rel="stylesheet" href="/index.css">
+</head>
+
+<body>
+
+<header class="page">
+    <div class="container">
+        <div class="col-xs-12" style="display: flex">
+            <div style="flex: auto">
+                <h1>
+                    <a href="/">GoDep</a>
+                    <em>Packages for Go</em>
+                </h1>
+            </div>
+            <div>
+                <nav>
+                    <a href="/faq">FAQ</a>
+                    <a href="https://github.com/golang/dep#setup">Install Dep</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="page">
+    {{ template "content" . }}
+</main>
+
+<footer class="page">
+    <div class="container">
+        <div class="col-xs-12" style="display: flex">
+            <div style="flex: auto">
+                <p>
+                    Unofficial |
+                    <a href="https://github.com/metalmatze/godep.org">Source</a> |
+                    <a href="https://github.com/metalmatze/godep.org/issues">Issues</a> |
+                    <a href="https://twitter.com/metalmatze">@metalmatze</a>
+                </p>
+            </div>
+            <div>
+                <p><a href="#">back to top</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-109508638-2"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', 'UA-109508638-2');
+</script>
+
+</body>
+</html>
+{{ end }}
+
+{{ define "content" }}{{ end }}
