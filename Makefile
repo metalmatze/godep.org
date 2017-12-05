@@ -16,7 +16,7 @@ all: build
 .PHONY: clean
 clean:
 	$(GO) clean -i ./...
-	rm -rf dist/
+	packr clean
 
 .PHONY: fmt
 fmt:
@@ -41,7 +41,14 @@ $(EXECUTABLE): $(wildcard *.go)
 	$(GO) build -v -ldflags '-w $(LDFLAGS)'
 
 .PHONY: build
-build: $(EXECUTABLE)
+build: packr $(EXECUTABLE)
+
+.PHONY: packr
+packr:
+	@which packr > /dev/null; if [ $$? -ne 0 ]; then \
+		$(GO) get -u github.com/gobuffalo/packr/...; \
+	fi
+	packr
 
 .PHONY: install
 install:
