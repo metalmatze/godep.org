@@ -46,7 +46,7 @@ build: packr $(EXECUTABLE)
 .PHONY: packr
 packr:
 	@which packr > /dev/null; if [ $$? -ne 0 ]; then \
-		$(GO) get -u github.com/gobuffalo/packr/...; \
+		go get -u github.com/gobuffalo/packr/...; \
 	fi
 	packr
 
