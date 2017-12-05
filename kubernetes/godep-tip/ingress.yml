@@ -1,0 +1,15 @@
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: godep-tip
+  namespace: godep
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: tip.godep.org
+    http:
+      paths:
+      - backend:
+          serviceName: godep-tip
+          servicePort: http

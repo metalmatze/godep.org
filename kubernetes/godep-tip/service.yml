@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: godep-tip
+  namespace: godep
+spec:
+  ports:
+  - name: http
+    targetPort: 8000
+    port: 80
+  selector:
+    app: godep-tip
