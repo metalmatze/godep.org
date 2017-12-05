@@ -75,9 +75,9 @@ func main() {
 		repositories = repository.NewPostgresStorage(db)
 	}
 
-	var repositoryService repository.Service
+	var rs repository.Service
 	{
-		repositoryService = repository.NewService(repositories, gh, gd)
+		rs = repository.NewService(repositories, gh, gd)
 	}
 
 	var g run.Group
@@ -118,10 +118,10 @@ func main() {
 		}
 
 		r := chi.NewRouter()
-		r.Get("/", homeHandler(homeTmpl))
+		r.Get("/", homeHandler(rs, homeTmpl))
 		r.Get("/faq", faqHandler(faqTmpl))
 		r.Get("/index.css", styleHandler(box.Bytes("index.css")))
-		r.Get("/github.com/{owner}/{name}", repository.GithubHandler(repositoryService, repositoryTmpl, notFoundTmpl))
+		r.Get("/github.com/{owner}/{name}", repository.GithubHandler(rs, repositoryTmpl, notFoundTmpl))
 		r.NotFound(notFoundHandler(notFoundTmpl))
 
 		s := http.Server{
@@ -196,14 +196,31 @@ func notFoundHandler(tmpl *template.Template) http.HandlerFunc {
 	}
 }
 
-func homeHandler(tmpl *template.Template) http.HandlerFunc {
+func homeHandler(rs repository.Service, tmpl *template.Template) http.HandlerFunc {
 	type Page struct {
-		Title string
+		Title   string
+		Popular []string
+		Latest  []string
+		Random  []string
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		p := Page{}
-		tmpl.ExecuteTemplate(w, "layout", p)
+		homepage, err := rs.Homepage(r.Context())
+		if err != nil {
+			http.Error(w, "failed to retrieve homepage", http.StatusInternalServerError)
+			return
+		}
+
+		p := Page{
+			Popular: homepage.Popular,
+			Latest:  homepage.Latest,
+			Random:  homepage.Random,
+		}
+
+		if err := tmpl.ExecuteTemplate(w, "layout", p); err != nil {
+			http.Error(w, "failed to execute homepage layout", http.StatusInternalServerError)
+			return
+		}
 	}
 }
 

@@ -84,6 +84,63 @@ func (p *postgres) Get(ctx context.Context, url string) (Repository, error) {
 	return r, nil
 }
 
+func (p *postgres) GetPopular(ctx context.Context, limit int) ([]string, error) {
+	q := `SELECT repositories.url
+		FROM repositories LEFT JOIN statistics ON repositories.id = statistics.repository_id
+		WHERE statistics.name = 'Stars' ORDER BY statistics.value DESC LIMIT $1`
+	rows, err := p.db.QueryContext(ctx, q, limit)
+	if err != nil {
+		return []string{}, errors.Wrap(err, "failed to query popular repositories")
+	}
+	defer rows.Close()
+
+	var repos []string
+	for rows.Next() {
+		var r string
+		rows.Scan(&r)
+		repos = append(repos, r)
+	}
+
+	return repos, nil
+
+}
+
+func (p *postgres) GetLatest(ctx context.Context, limit int) ([]string, error) {
+	q := `SELECT url FROM repositories ORDER BY updated DESC LIMIT $1`
+	rows, err := p.db.QueryContext(ctx, q, limit)
+	if err != nil {
+		return []string{}, errors.Wrap(err, "failed to query latest repositories")
+	}
+	defer rows.Close()
+
+	var repos []string
+	for rows.Next() {
+		var r string
+		rows.Scan(&r)
+		repos = append(repos, r)
+	}
+
+	return repos, nil
+}
+
+func (p *postgres) GetRandom(ctx context.Context, limit int) ([]string, error) {
+	q := `SELECT url FROM repositories ORDER BY random() LIMIT $1`
+	rows, err := p.db.QueryContext(ctx, q, limit)
+	if err != nil {
+		return []string{}, errors.Wrap(err, "failed to query random repositories")
+	}
+	defer rows.Close()
+
+	var repos []string
+	for rows.Next() {
+		var r string
+		rows.Scan(&r)
+		repos = append(repos, r)
+	}
+
+	return repos, nil
+}
+
 func (p *postgres) Exists(ctx context.Context, url string) (bool, error) {
 	q := `SELECT url FROM repositories WHERE url = $1 LIMIT 1`
 	row := p.db.QueryRowContext(ctx, q, url)

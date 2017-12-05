@@ -12,11 +12,15 @@ type (
 	// actual business logic for repositories.
 	Service interface {
 		Get(ctx context.Context, url string) (Repository, error)
+		Homepage(ctx context.Context) (Homepage, error)
 	}
 	// Storage is an interface which implementation should actually
 	// store and retrieve repositories.
 	Storage interface {
 		Get(ctx context.Context, url string) (Repository, error)
+		GetPopular(ctx context.Context, limit int) ([]string, error)
+		GetLatest(ctx context.Context, limit int) ([]string, error)
+		GetRandom(ctx context.Context, limit int) ([]string, error)
 		Exists(ctx context.Context, url string) (bool, error)
 		Create(ctx context.Context, repo Repository) error
 	}
@@ -82,4 +86,39 @@ func (s *service) Get(ctx context.Context, url string) (Repository, error) {
 	}
 
 	return repo, err
+}
+
+type Homepage struct {
+	Popular []string
+	Latest  []string
+	Random  []string
+}
+
+func (s *service) Homepage(ctx context.Context) (Homepage, error) {
+	limit := 15
+
+	// TODO: Use a sync.WaitGroup to run this concurrently
+
+	h := Homepage{}
+
+	popular, err := s.repositories.GetPopular(ctx, limit)
+	if err != nil {
+		return h, err
+	}
+
+	latest, err := s.repositories.GetLatest(ctx, limit)
+	if err != nil {
+		return h, err
+	}
+
+	random, err := s.repositories.GetRandom(ctx, limit)
+	if err != nil {
+		return h, err
+	}
+
+	return Homepage{
+		Popular: popular,
+		Latest:  latest,
+		Random:  random,
+	}, nil
 }

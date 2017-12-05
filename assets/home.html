@@ -10,49 +10,25 @@
             <div class="col-xs-12 col-md-6 col-lg-4">
                 <h4>Popular Packages</h4>
                 <p>
-                    <a href="/github.com/djherbis/buffer">github.com/djherbis/buffer</a><br>
-                    <a href="/github.com/djherbis/nio">github.com/djherbis/nio</a><br>
-                    <a href="/github.com/go-kit/kit">github.com/go-kit/kit</a><br>
-                    <a href="/github.com/google/btree">github.com/google/btree</a><br>
-                    <a href="/github.com/hashicorp/go-sockaddr">github.com/hashicorp/go-sockaddr</a><br>
-                    <a href="/github.com/hashicorp/memberlist">github.com/hashicorp/memberlist</a><br>
-                    <a href="/github.com/oklog/ulid">github.com/oklog/ulid</a><br>
-                    <a href="/github.com/pborman/uuid">github.com/pborman/uuid</a><br>
-                    <a href="/github.com/pkg/errors">github.com/pkg/errors</a><br>
-                    <a href="/github.com/prometheus/client_golang">github.com/prometheus/client_golang</a><br>
-                    <a href="/github.com/prometheus/prometheus">github.com/prometheus/prometheus</a><br>
+                {{ range .Popular }}
+                    <a href="/{{ . }}">{{ . }}</a><br>
+                {{ end }}
                 </p>
             </div>
             <div class="col-xs-12 col-md-6 col-lg-4">
                 <h4>Latest Packages</h4>
                 <p>
-                    <a href="/github.com/djherbis/buffer">github.com/djherbis/buffer</a><br>
-                    <a href="/github.com/djherbis/nio">github.com/djherbis/nio</a><br>
-                    <a href="/github.com/go-kit/kit">github.com/go-kit/kit</a><br>
-                    <a href="/github.com/google/btree">github.com/google/btree</a><br>
-                    <a href="/github.com/hashicorp/go-sockaddr">github.com/hashicorp/go-sockaddr</a><br>
-                    <a href="/github.com/hashicorp/memberlist">github.com/hashicorp/memberlist</a><br>
-                    <a href="/github.com/oklog/ulid">github.com/oklog/ulid</a><br>
-                    <a href="/github.com/pborman/uuid">github.com/pborman/uuid</a><br>
-                    <a href="/github.com/pkg/errors">github.com/pkg/errors</a><br>
-                    <a href="/github.com/prometheus/client_golang">github.com/prometheus/client_golang</a><br>
-                    <a href="/github.com/prometheus/prometheus">github.com/prometheus/prometheus</a><br>
+                {{ range .Latest }}
+                    <a href="/{{ . }}">{{ . }}</a><br>
+                {{ end }}
                 </p>
             </div>
             <div class="col-xs-12 col-md-6 col-lg-4">
                 <h4>Random Packages</h4>
                 <p>
-                    <a href="/github.com/djherbis/buffer">github.com/djherbis/buffer</a><br>
-                    <a href="/github.com/djherbis/nio">github.com/djherbis/nio</a><br>
-                    <a href="/github.com/go-kit/kit">github.com/go-kit/kit</a><br>
-                    <a href="/github.com/google/btree">github.com/google/btree</a><br>
-                    <a href="/github.com/hashicorp/go-sockaddr">github.com/hashicorp/go-sockaddr</a><br>
-                    <a href="/github.com/hashicorp/memberlist">github.com/hashicorp/memberlist</a><br>
-                    <a href="/github.com/oklog/ulid">github.com/oklog/ulid</a><br>
-                    <a href="/github.com/pborman/uuid">github.com/pborman/uuid</a><br>
-                    <a href="/github.com/pkg/errors">github.com/pkg/errors</a><br>
-                    <a href="/github.com/prometheus/client_golang">github.com/prometheus/client_golang</a><br>
-                    <a href="/github.com/prometheus/prometheus">github.com/prometheus/prometheus</a><br>
+                {{ range .Random }}
+                    <a href="/{{ . }}">{{ . }}</a><br>
+                {{ end }}
                 </p>
             </div>
         </div>
