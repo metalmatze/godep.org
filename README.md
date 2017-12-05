@@ -9,6 +9,13 @@ What if we add a lot of features to it, that are missing in its current form.
 
 This project tries to shed light on this topic.
 
+#### Why not simply improve GoDoc?
+
+The purpose of this project is going beyond what GoDoc is currently capable of.
+GoDoc uses Redis to store its data. This will not be sufficient for what we're planning to do.
+Thus, right now, we use Postgres as Database.
+Additionally we want to be able to experiment. If something works out really well,
+I'm sure we can work on getting the feature into GoDoc as well.
 
 ## Development
 
