@@ -45,12 +45,12 @@ pipeline:
     when:
       branch: master
 
-  deploy-tip:
-    image: kubeciio/kubectl
-    kubectl: apply
-    secret: [ kubeconfig ]
-    kubeconfig_secret: kubeconfig
-    files:
-      - kubernetes/godep-tip/ingress.yml
-      - kubernetes/godep-tip/service.yml
-      - kubernetes/godep-tip/deployment.yml
+#  deploy-tip:
+#    image: kubeciio/kubectl
+#    kubectl: apply
+#    secret: [ kubeconfig ]
+#    kubeconfig_secret: kubeconfig
+#    files:
+#      - kubernetes/godep-tip/ingress.yml
+#      - kubernetes/godep-tip/service.yml
+#      - kubernetes/godep-tip/deployment.yml
