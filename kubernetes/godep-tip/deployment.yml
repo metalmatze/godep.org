@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: godep-tip
-        image: metalmatze/godep.org
+        image: metalmatze/godep.org:tip-{{ .DroneCommitSha | truncate 8 }}
         imagePullPolicy: Always
         env:
         - name: GITHUB_TOKEN
