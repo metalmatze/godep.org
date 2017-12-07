@@ -48,7 +48,7 @@ pipeline:
   deploy-tip:
     image: kubeciio/kubectl
     kubectl: apply
-    secret: [ kubeconfig ]
+    secrets: [ kubeconfig ]
     files:
       - kubernetes/godep-tip/ingress.yml
       - kubernetes/godep-tip/service.yml
