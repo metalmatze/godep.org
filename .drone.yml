@@ -41,7 +41,9 @@ pipeline:
     image: plugins/docker
     repo: metalmatze/godep.org
     secrets: [ docker_username, docker_password ]
-    tag: [ latest ]
+    tags:
+      - 'latest'
+      - 'tip-${DRONE_COMMIT_SHA:0:8}'
     when:
       branch: master
 
@@ -53,3 +55,5 @@ pipeline:
       - kubernetes/godep-tip/ingress.yml
       - kubernetes/godep-tip/service.yml
       - kubernetes/godep-tip/deployment.yml
+    when:
+      branch: master
