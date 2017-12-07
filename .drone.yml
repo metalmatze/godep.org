@@ -51,7 +51,7 @@ pipeline:
     image: kubeciio/kubectl
     kubectl: apply
     secrets: [ kubeconfig ]
-    files:
+    templates:
       - kubernetes/godep-tip/ingress.yml
       - kubernetes/godep-tip/service.yml
       - kubernetes/godep-tip/deployment.yml
