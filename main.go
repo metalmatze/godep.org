@@ -42,14 +42,17 @@ func main() {
 		"caller", log.DefaultCaller,
 	)
 
-	box := packr.NewBox("./assets")
+	var repositories repository.Storage
+	{
+		db, err := sql.Open("postgres", config.DSN)
+		if err != nil {
+			logger.Log("msg", "failed to open sql connection to postgres", "err", err)
+			os.Exit(2)
+		}
+		defer db.Close()
 
-	db, err := sql.Open("postgres", config.DSN)
-	if err != nil {
-		logger.Log("msg", "failed to open sql connection to postgres", "err", err)
-		os.Exit(2)
+		repositories = repository.NewPostgresStorage(db)
 	}
-	defer db.Close()
 
 	apiCalls := prometheus.NewHistogramFrom(prom.HistogramOpts{
 		Namespace: "godep",
@@ -57,6 +60,13 @@ func main() {
 		Help:      "API calls made to other services",
 		Buckets:   []float64{.025, .05, .075, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1, 1.5, 2, 3, 4, 5},
 	}, []string{"service"})
+
+	serviceCalls := prometheus.NewHistogramFrom(prom.HistogramOpts{
+		Namespace: "godep",
+		Name:      "service_calls",
+		Help:      "Service calls made to their methods",
+		Buckets:   []float64{0.001, 0.005, .01, .025, .05, .075, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1},
+	}, []string{"service", "method"})
 
 	gd, err := repository.NewGoDoc(apiCalls)
 	if err != nil {
@@ -70,14 +80,10 @@ func main() {
 		os.Exit(2)
 	}
 
-	var repositories repository.Storage
-	{
-		repositories = repository.NewPostgresStorage(db)
-	}
-
 	var rs repository.Service
 	{
 		rs = repository.NewService(repositories, gh, gd)
+		rs = repository.NewMetricService(rs, serviceCalls)
 	}
 
 	var g run.Group
@@ -93,6 +99,8 @@ func main() {
 		})
 	}
 	{
+		box := packr.NewBox("./assets")
+
 		notFoundTmpl, err := loadTemplates(box, "_layout.html", "404.html")
 		if err != nil {
 			level.Warn(logger).Log("msg", "failed to load templates", "err", err)
