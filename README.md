@@ -42,7 +42,7 @@ migrate -database postgres://postgres:postgres@localhost:5432/postgres?sslmode=d
 ```
 
 
-### Build gode.org
+### Build godep.org
 
 Get all dependencies. We use [golang/dep](https://github.com/golang/dep).  
 Fetch all dependencies with:
