@@ -4,8 +4,12 @@ metadata:
   name: godep-tip
   namespace: godep
   annotations:
-    kubernetes.io/ingress.class: traefik
+    kubernetes.io/ingress.class: nginx
 spec:
+  tls:
+  - hosts:
+    - tip.godep.org
+    secretName: godep-tip-tls
   rules:
   - host: tip.godep.org
     http:
