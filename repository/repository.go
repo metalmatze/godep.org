@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"sort"
 	"time"
 )
 
@@ -11,11 +12,10 @@ type (
 		Description string
 		Updated     time.Time
 
-		CurrentVersion Version
-		License        License
-		Statistics     []Statistic
-		Topics         []Topic
-		Versions       []Version
+		License    License
+		Statistics []Statistic
+		Topics     []Topic
+		Versions   []Version
 	}
 	// License of a Repository
 	License struct {
@@ -35,3 +35,18 @@ type (
 		Published time.Time
 	}
 )
+
+func (r Repository) CurrentVersion() Version {
+	if len(r.Versions) == 0 {
+		return Version{}
+	}
+
+	if r.Versions[0].Published.IsZero() {
+		return r.Versions[0]
+	}
+
+	sort.Slice(r.Versions, func(i, j int) bool {
+		return r.Versions[i].Published.After(r.Versions[j].Published)
+	})
+	return r.Versions[0]
+}

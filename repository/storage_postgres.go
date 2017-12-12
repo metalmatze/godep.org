@@ -54,7 +54,7 @@ func (p *postgres) Get(ctx context.Context, url string) (Repository, error) {
 	}
 	// Fetch all repository versions
 	{
-		q := "SELECT name, published FROM versions WHERE repository_id = $1 ORDER BY sort_order DESC LIMIT 25"
+		q := "SELECT name, published FROM versions WHERE repository_id = $1 ORDER BY sort_order ASC LIMIT 25"
 		rows, err := p.db.QueryContext(ctx, q, id)
 		if err != nil {
 			return r, errors.Wrap(err, "failed to fetch repository versions")
@@ -74,10 +74,6 @@ func (p *postgres) Get(ctx context.Context, url string) (Repository, error) {
 		}
 		if err := rows.Err(); err != nil {
 			return r, errors.Wrap(err, "failed to retrieve repository versions")
-		}
-
-		if len(r.Versions) > 0 {
-			r.CurrentVersion = r.Versions[0]
 		}
 	}
 
