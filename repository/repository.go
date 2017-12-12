@@ -36,6 +36,7 @@ type (
 	}
 )
 
+// CurrentVersion returns the latest and current version of all versions
 func (r Repository) CurrentVersion() Version {
 	if len(r.Versions) == 0 {
 		return Version{}
