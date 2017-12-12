@@ -42,12 +42,16 @@ func (r Repository) CurrentVersion() Version {
 		return Version{}
 	}
 
-	if r.Versions[0].Published.IsZero() {
-		return r.Versions[0]
+	if r.Versions[len(r.Versions)-1].Published.IsZero() {
+		return r.Versions[len(r.Versions)-1]
 	}
 
-	sort.Slice(r.Versions, func(i, j int) bool {
-		return r.Versions[i].Published.After(r.Versions[j].Published)
+	// Copy the original slice to not sort in place
+	versions := make([]Version, len(r.Versions))
+	copy(versions, r.Versions)
+
+	sort.Slice(versions, func(i, j int) bool {
+		return versions[i].Published.After(versions[j].Published)
 	})
-	return r.Versions[0]
+	return versions[0]
 }

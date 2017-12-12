@@ -30,6 +30,6 @@ func TestRepository_SetCurrentVersion(t *testing.T) {
 	r = Repository{}
 	r.Versions = []Version{v3, v4}
 	assert.Equal(t, v4, r.CurrentVersion())
-	assert.Equal(t, v4, r.Versions[0])
-	assert.Equal(t, v3, r.Versions[1])
+	assert.Equal(t, v3, r.Versions[0])
+	assert.Equal(t, v4, r.Versions[1])
 }
