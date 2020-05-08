@@ -1,3 +1,7 @@
+# This idea has been superseded by [pkg.go.dev](https://pkg.go.dev). 
+
+---
+
 # godep.org [![Build Status](https://drone.github.matthiasloibl.com/api/badges/metalmatze/godep.org/status.svg)](https://drone.github.matthiasloibl.com/metalmatze/godep.org)
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/metalmatze/godep.org.svg?maxAge=604800)](https://hub.docker.com/r/metalmatze/godep.org)
